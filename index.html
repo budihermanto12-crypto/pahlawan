@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Pahlawan Nasional Indonesia - Merah Putih Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+        .hero-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hero-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(225, 29, 72, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .red-gradient {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        }
+        .banner-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen antialiased">
+
+    <header class="red-gradient text-white shadow-xl sticky top-0 z-50 border-b-4 border-amber-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="bg-white/10 backdrop-blur p-3 rounded-2xl border border-white/20">
+                    <i class="fa-solid fa-flag text-3xl text-amber-300"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-white text-red-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest">Merah Putih</span>
+                        <span class="text-xs text-red-200">Buku IPAS Kelas 6</span>
+                    </div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">Pahlawan Nasional Indonesia</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="relative w-full md:w-72">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-red-200">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Cari pahlawan atau wilayah..." 
+                        class="w-full pl-10 pr-4 py-2.5 bg-red-950/40 text-white placeholder-red-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 border border-red-500/40 backdrop-blur">
+                </div>
+                <button onclick="openQuizModal()" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-lg hover:shadow-amber-400/20 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-gamepad text-lg"></i> Kuis Interaktif
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full">
+        <!-- Hero Header Card -->
+        <div class="banner-gradient rounded-3xl p-6 md:p-8 shadow-sm border border-red-100 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none">
+                <i class="fa-solid fa-shield-halved text-[220px] text-red-600"></i>
+            </div>
+            <div class="space-y-2 text-center md:text-left z-10">
+                <div class="inline-flex items-center gap-2 bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <i class="fa-solid fa-star text-amber-500"></i> Galeri Tokoh Perjuangan
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">Mengenal 17 Tokoh Pahlawan Indonesia</h2>
+                <p class="text-slate-600 text-sm max-w-2xl leading-relaxed">
+                    Pelajari kisah keberanian, peranan penting, serta perjuangan gigih para pahlawan dari berbagai daerah di Nusantara untuk mempertahankan kemerdekaan Indonesia.
+                </p>
+            </div>
+            <div class="bg-white border-2 border-red-100 rounded-2xl p-5 text-center shrink-0 shadow-md z-10 min-w-[140px]">
+                <div class="text-3xl font-black text-red-600" id="totalHeroesCount">17</div>
+                <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Tokoh Pahlawan</div>
+            </div>
+        </div>
+
+        <!-- Region Filter Buttons -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
+            <button onclick="filterRegion('all')" class="filter-btn active bg-red-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shrink-0 shadow-md shadow-red-600/20">Semua Wilayah</button>
+            <button onclick="filterRegion('Nusa Tenggara')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Nusa Tenggara</button>
+            <button onclick="filterRegion('Kalimantan')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Kalimantan</button>
+            <button onclick="filterRegion('Papua')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Papua</button>
+            <button onclick="filterRegion('Bali')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Bali</button>
+            <button onclick="filterRegion('Jawa')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Jawa</button>
+            <button onclick="filterRegion('Sumatra')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Sumatra</button>
+            <button onclick="filterRegion('Maluku')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-semibold transition shrink-0">Maluku</button>
+        </div>
+
+        <!-- Dynamic Grid for Hero Cards -->
+        <div id="heroesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards populated by JS -->
+        </div>
+    </main>
+
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-red-100 transform transition-all">
+            <div class="sticky top-0 bg-white/95 backdrop-blur border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
+                <span id="modalRegionBadge" class="bg-red-100 text-red-700 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider">Wilayah</span>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 md:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                    <img id="modalImage" src="" alt="Foto Pahlawan" class="w-44 h-56 object-cover object-top rounded-2xl shadow-lg border-2 border-red-100 shrink-0 bg-slate-100">
+                    <div class="space-y-2 text-center sm:text-left">
+                        <h3 id="modalName" class="text-2xl font-bold text-slate-900">Nama Pahlawan</h3>
+                        <p id="modalTitle" class="text-red-600 font-semibold text-sm">Gelar & Julukan</p>
+                        <div class="flex flex-wrap gap-2 justify-center sm:justify-start pt-2">
+                            <span id="modalPenetapan" class="bg-slate-100 text-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium border border-slate-200">Penetapan</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4 pt-2">
+                    <div>
+                        <h4 class="text-xs font-bold text-red-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-book-open"></i> Ringkasan Perjuangan
+                        </h4>
+                        <p id="modalSummary" class="text-slate-700 text-sm md:text-base leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100"></p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-red-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-medal"></i> Jasa & Peran Penting
+                        </h4>
+                        <p id="modalContribution" class="text-slate-700 text-sm leading-relaxed bg-red-50/50 p-4 rounded-2xl border border-red-100"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition shadow">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="quizModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-red-100 p-6 md:p-8">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="bg-red-100 text-red-600 p-3 rounded-2xl">
+                        <i class="fa-solid fa-award text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">Kuis Pahlawan Cilik</h3>
+                        <p class="text-xs text-slate-500">Uji Pengetahuan Sejarahmu</p>
+                    </div>
+                </div>
+                <button onclick="closeQuizModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-full hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="quizContainer">
+                <div class="mb-4 flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    <span id="quizProgress">Pertanyaan 1 dari 5</span>
+                    <span id="quizScore" class="text-red-600 font-bold">Skor: 0</span>
+                </div>
+                <div class="bg-red-50/60 p-5 rounded-2xl mb-6 border border-red-100">
+                    <p id="quizQuestion" class="text-slate-800 font-bold text-base md:text-lg leading-snug">Memuat pertanyaan...</p>
+                </div>
+                <div id="quizOptions" class="space-y-3">
+                    <!-- Options JS injected -->
+                </div>
+            </div>
+
+            <div id="quizResult" class="hidden text-center py-6 space-y-4">
+                <div class="w-24 h-24 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner border-4 border-amber-200">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h4 class="text-2xl font-bold text-slate-900">Kuis Selesai!</h4>
+                <p id="quizFinalScore" class="text-slate-600 text-base">Kamu berhasil menjawab dengan luar biasa!</p>
+                <div class="pt-4 flex gap-3 justify-center">
+                    <button onclick="restartQuiz()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition shadow-lg shadow-red-600/20">Coba Lagi</button>
+                    <button onclick="closeQuizModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-2.5 rounded-xl text-sm transition">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data 17 Pahlawan Nasional sesuai Materi Teks IPAS Kelas 6
+        const heroesData = [
+            {
+                id: 1,
+                name: "Muhammad Zainuddin Abdul Madjid",
+                title: "Maulana Syeikh - Pahlawan Pertama NTB",
+                region: "Nusa Tenggara",
+                penetapan: "9 November 2017",
+                localImage: "1.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Tuan_Guru_Kiai_Hafidz_Zainuddin_Abdul_Madjid.jpg",
+                summary: "Dikenal sebagai Maulana Syeikh, beliau adalah pahlawan nasional pertama dari Nusa Tenggara Barat. Beliau merupakan tokoh pembaharu pendidikan Islam dan pejuang kemerdekaan yang gigih.",
+                contribution: "Pendiri organisasi Nahdlatul Wathan (1953) sebagai wadah pendidikan, dakwah, dan sosial yang memiliki ribuan sekolah di Indonesia."
+            },
+            {
+                id: 2,
+                name: "Pangeran Antasari",
+                title: "Panembahan Amiruddin Khalifatul Mukminin",
+                region: "Kalimantan",
+                penetapan: "Tahun 1968",
+                localImage: "2.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Pangeran_Antasari.jpg",
+                summary: "Pemimpin Perang Banjar di Kalimantan Selatan melawan penjajahan Belanda dengan keteguhan dan keberanian luar biasa sejak tahun 1859.",
+                contribution: "Wajahnya diabadikan dalam uang kertas rupiah pecahan Rp2.000. Memimpin perlawanan sengit di Pengaron hingga hulu Sungai Barito."
+            },
+            {
+                id: 3,
+                name: "Silas Papare",
+                title: "Pejuang Integrasi Irian Barat",
+                region: "Papua",
+                penetapan: "14 September 1993",
+                localImage: "3.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/0/05/Silas_Papare.jpg",
+                summary: "Tokoh asal Papua yang mendirikan Partai Kemerdekaan Indonesia Irian (PKII) di Jayapura untuk melawan upaya Belanda mempertahankan kekuasaan.",
+                contribution: "Menjadi delegasi Indonesia dalam Perjanjian New York (1962) yang membawa Irian Barat kembali ke pangkuan Ibu Pertiwi."
+            },
+            {
+                id: 4,
+                name: "I Gusti Ngurah Rai",
+                title: "Pemimpin Perang Puputan Margarana",
+                region: "Bali",
+                penetapan: "9 Agustus 1975",
+                localImage: "4.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/8/8c/I_Gusti_Ngurah_Rai.jpg",
+                summary: "Pahlawan asal Bali yang memimpin pasukan Ciung Wanara melawan Belanda dengan semangat 'Puputan' (bertempur hingga titik darah penghabisan).",
+                contribution: "Gugur dalam Perang Puputan Margarana. Namanya diabadikan sebagai Bandara Internasional Ngurah Rai dan pecahan uang Rp50.000."
+            },
+            {
+                id: 5,
+                name: "Ki Hajar Dewantara",
+                title: "Bapak Pendidikan Nasional",
+                region: "Jawa",
+                penetapan: "28 November 1959",
+                localImage: "5.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/3/36/Ki_Hajar_Dewantara_Dewantara_Kirti_Griha_Museum_collection.jpg",
+                summary: "Bapak Pendidikan Nasional Indonesia yang mendirikan lembaga perguruan Taman Siswa serta menjabat sebagai Menteri Pendidikan pertama.",
+                contribution: "Semboyan pendidikannya yang terkenal: Ing Ngarsa Sung Tuladha, Ing Madya Mangun Karsa, Tut Wuri Handayani."
+            },
+            {
+                id: 6,
+                name: "Cut Nyak Dien",
+                title: "Ratu Aceh - Pemimpin Perang Gerilya",
+                region: "Sumatra",
+                penetapan: "2 Mei 1964",
+                localImage: "6.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Cut_Nyak_Dien_%28Collection_Tropenmuseum%29.jpg",
+                summary: "Pahlawan wanita asal Aceh yang dijuluki 'Ratu Aceh' karena kegigihan dan kepemimpinannya dalam perang gerilya melawan kolonial Belanda.",
+                contribution: "Bersama suaminya, Teuku Umar, memimpin perlawanan menggunakan taktik cerdik untuk mengusir penjajah dari tanah Rencong."
+            },
+            {
+                id: 7,
+                name: "Pattimura",
+                title: "Thomas Matulessy - Pejuang Maluku",
+                region: "Maluku",
+                penetapan: "6 November 1973",
+                localImage: "7.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/3/36/Kapitan_Pattimura.jpg",
+                summary: "Pahlawan asal Saparua, Maluku, yang memimpin perlawanan besar pada tahun 1817 melawan monopoli perdagangan dan penindasan Belanda.",
+                contribution: "Namanya diabadikan sebagai nama universitas ternama di Ambon dan Kodam XV/Pattimura."
+            },
+            {
+                id: 8,
+                name: "Pangeran Diponegoro",
+                title: "Pemimpin Perang Jawa (1825–1830)",
+                region: "Jawa",
+                penetapan: "6 November 1973",
+                localImage: "8.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Diponegoro.jpg",
+                summary: "Pangeran dari Keraton Yogyakarta yang memimpin Perang Jawa karena geram atas campur tangan Belanda dan pemasangan patok jalan di makam leluhur.",
+                contribution: "Memimpin perlawanan besar yang menguras keuangan kolonial Belanda selama bertahun-tahun."
+            },
+            {
+                id: 9,
+                name: "Sisingamangaraja XII",
+                title: "Patuan Bosar Sinambela - Pahlawan Batak",
+                region: "Sumatra",
+                penetapan: "9 November 1961",
+                localImage: "9.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/8/85/Sisingamangaraja_XII.jpg",
+                summary: "Pemimpin legendaris masyarakat Batak di Sumatra Utara yang melawan penjajahan Belanda selama hampir 30 tahun dalam Perang Batak.",
+                contribution: "Dikenal sebagai pemimpin yang pantang menyerah serta sangat menguasai medan hutan dan perbukitan."
+            },
+            {
+                id: 10,
+                name: "Martha Christina Tiahahu",
+                title: "Mutiara dari Nusa Laut",
+                region: "Maluku",
+                penetapan: "20 Mei 1969",
+                localImage: "10.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/9/91/Martha_Christina_Tiahahu.jpg",
+                summary: "Gadis pemberani asal Maluku yang ikut mengangkat senjata melawan Belanda di usia 17 tahun bersama ayahnya, Paulus Tiahahu.",
+                contribution: "Dijuluki 'Mutiara dari Nusa Laut' atas keberaniannya bertempur sengit di Pulau Saparua."
+            },
+            {
+                id: 11,
+                name: "Ir. Sukarno",
+                title: "Proklamator & Presiden Pertama RI",
+                region: "Jawa",
+                penetapan: "7 November 2012",
+                localImage: "11.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/0/01/Soekarno_ora_roesak.jpg",
+                summary: "Tokoh penting Proklamator Kemerdekaan bersama Mohammad Hatta. Beliau adalah pengusul dasar negara Pancasila dalam sidang BPUPK.",
+                contribution: "Membacakan naskah Proklamasi Kemerdekaan Indonesia pada 17 Agustus 1945 dan memimpin perjuangan awal kemerdekaan."
+            },
+            {
+                id: 12,
+                name: "Mohammad Hatta",
+                title: "Bung Hatta - Proklamator & Wapres Pertama",
+                region: "Sumatra",
+                penetapan: "7 November 2012",
+                localImage: "12.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Mohammad_Hatta.jpg",
+                summary: "Wakil Presiden pertama Republik Indonesia yang mendampingi Sukarno mendeklarasikan kemerdekaan serta memimpin delegasi di KMB Den Haag.",
+                contribution: "Dikenal sebagai Bapak Koperasi Indonesia dan pemikir besar ekonomi kerakyatan."
+            },
+            {
+                id: 13,
+                name: "Bung Tomo",
+                title: "Sutomo - Pengobar Semangat 10 November",
+                region: "Jawa",
+                penetapan: "10 November 2008",
+                localImage: "13.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/d/dc/Bung_Tomo_1945.jpg",
+                summary: "Tokoh penting dalam Pertempuran 10 November 1945 di Surabaya yang membangkitkan keberanian rakyat melalui pidato radionya yang berapi-api.",
+                contribution: "Menyatukan semangat juang arek-arek Suroboyo melawan tentara Sekutu dan NICA demi mempertahankan kemerdekaan."
+            },
+            {
+                id: 14,
+                name: "Sutan Sjahrir",
+                title: "Perdana Menteri Pertama & Pelopor Diplomasi",
+                region: "Sumatra",
+                penetapan: "9 April 1966",
+                localImage: "14.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Sutan_Sjahrir.jpg",
+                summary: "Tokoh muda cerdas yang pertama kali mengetahui berita kekalahan Jepang dan mendesak segera dilaksanakannya Proklamasi Kemerdekaan.",
+                contribution: "Menjabat sebagai Perdana Menteri RI pertama dan Menteri Luar Negeri yang memimpin diplomasi kedaulatan."
+            },
+            {
+                id: 15,
+                name: "Haji Agus Salim",
+                title: "The Grand Old Man - Tokoh Diplomasi Ulung",
+                region: "Sumatra",
+                penetapan: "27 Desember 1961",
+                localImage: "15.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9f/Haji_Agus_Salim.jpg",
+                summary: "Pahlawan Kemerdekaan yang fasih berbagai bahasa asing dan dijuluki 'The Grand Old Man' atas kepiawaiannya dalam perundingan internasional.",
+                contribution: "Berperan besar dalam Konferensi Meja Bundar (KMB) di Den Haag tahun 1949 yang mengakhiri konflik dengan Belanda."
+            },
+            {
+                id: 16,
+                name: "Mohammad Yamin",
+                title: "Sastrawan, Sejarawan, & Perumus Pancasila",
+                region: "Sumatra",
+                penetapan: "6 November 1973",
+                localImage: "16.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Muhammad_Yamin_EDHA.jpg",
+                summary: "Tokoh nasional multitalenta yang sejak muda memiliki nasionalisme tinggi, duduk di BPUPK dan ikut mengusulkan dasar negara Pancasila.",
+                contribution: "Pernah menjabat sebagai Menteri Kehakiman, Menteri Pendidikan, serta Ketua Dewan Perancang Nasional."
+            },
+            {
+                id: 17,
+                name: "Achmad Soebardjo",
+                title: "Diplomat Ulung & Menteri Luar Negeri Pertama",
+                region: "Jawa",
+                penetapan: "Tahun 2009",
+                localImage: "17.jpg",
+                fallbackUrl: "https://upload.wikimedia.org/wikipedia/commons/8/86/Achmad_Soebardjo_Official_Portrait.jpg",
+                summary: "Tokoh yang berperan menjemput Sukarno-Hatta dari Rengasdengklok serta menyumbangkan ide kalimat dalam teks Proklamasi Kemerdekaan.",
+                contribution: "Menjadi Menteri Luar Negeri Republik Indonesia yang pertama serta diplomat ulung dalam memperjuangkan pengakuan kedaulatan."
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderHeroes(data) {
+            const grid = document.getElementById('heroesGrid');
+            document.getElementById('totalHeroesCount').textContent = data.length;
+            
+            if (data.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                        <i class="fa-solid fa-face-frown text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-600 font-medium">Tokoh pahlawan yang kamu cari tidak ditemukan.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = data.map(hero => `
+                <div onclick="openModal(${hero.id})" class="hero-card bg-white rounded-3xl p-5 border border-slate-100 shadow-sm cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="relative mb-4 overflow-hidden rounded-2xl aspect-[4/5] bg-slate-100 border border-slate-100">
+                            <img src="${hero.localImage}" alt="${hero.name}" 
+                                 onerror="this.onerror=null; this.src='${hero.fallbackUrl}';" 
+                                 class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 bg-red-600/90 backdrop-blur text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow">
+                                ${hero.region}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-lg mb-1 line-clamp-1 group-hover:text-red-600 transition">${hero.name}</h3>
+                        <p class="text-red-600 font-semibold text-xs mb-3 line-clamp-1">${hero.title}</p>
+                        <p class="text-slate-600 text-xs line-clamp-3 leading-relaxed">${hero.summary}</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-600 group-hover:translate-x-1 transition">
+                        <span>Lihat Selengkapnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRegion(region) {
+            currentFilter = region;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-600/20');
+                btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+            });
+            event.target.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+            event.target.classList.add('bg-red-600', 'text-white', 'shadow-md', 'shadow-red-600/20');
+
+            filterData();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterData);
+
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = heroesData.filter(hero => {
+                const matchesRegion = currentFilter === 'all' || hero.region === currentFilter;
+                const matchesQuery = hero.name.toLowerCase().includes(query) || hero.region.toLowerCase().includes(query) || hero.title.toLowerCase().includes(query);
+                return matchesRegion && matchesQuery;
+            });
+            renderHeroes(filtered);
+        }
+
+        function openModal(id) {
+            const hero = heroesData.find(h => h.id === id);
+            if (!hero) return;
+
+            document.getElementById('modalRegionBadge').textContent = hero.region;
+            
+            const modalImg = document.getElementById('modalImage');
+            modalImg.src = hero.localImage;
+            modalImg.onerror = function() {
+                this.onerror = null;
+                this.src = hero.fallbackUrl;
+            };
+
+            document.getElementById('modalName').textContent = hero.name;
+            document.getElementById('modalTitle').textContent = hero.title;
+            document.getElementById('modalPenetapan').textContent = `Penetapan: ${hero.penetapan}`;
+            document.getElementById('modalSummary').textContent = hero.summary;
+            document.getElementById('modalContribution').textContent = hero.contribution;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        const quizQuestions = [
+            {
+                question: "Siapakah pahlawan nasional pertama dari Nusa Tenggara Barat yang mendirikan organisasi Nahdlatul Wathan?",
+                options: ["Pangeran Antasari", "Muhammad Zainuddin Abdul Madjid", "Silas Papare", "Pattimura"],
+                answer: 1
+            },
+            {
+                question: "Pahlawan yang wajahnya diabadikan dalam uang kertas pecahan Rp2.000 dan memimpin Perang Banjar adalah...",
+                options: ["Pangeran Antasari", "I Gusti Ngurah Rai", "Sisingamangaraja XII", "Bung Tomo"],
+                answer: 0
+            },
+            {
+                question: "Siapakah pahlawan wanita asal Aceh yang dijuluki sebagai 'Ratu Aceh' dan memimpin perang gerilya melawan Belanda?",
+                options: ["Martha Christina Tiahahu", "Fatmawati", "Cut Nyak Dien", "Siti Manggopoh"],
+                answer: 2
+            },
+            {
+                question: "Ki Hajar Dewantara sangat terkenal dengan semboyan pendidikannya. Apa gelar resmi beliau saat ini?",
+                options: ["Bapak Koperasi Indonesia", "Bapak Pendidikan Nasional", "Proklamator Kemerdekaan", "The Grand Old Man"],
+                answer: 1
+            },
+            {
+                question: "Siapakah tokoh muda yang pertama kali mengetahui berita kekalahan Jepang dan mendesak segera dilaksanakannya Proklamasi?",
+                options: ["Mohammad Hatta", "Achmad Soebardjo", "Sutan Sjahrir", "Mohammad Yamin"],
+                answer: 2
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+
+        function openQuizModal() {
+            currentQuizIndex = 0;
+            quizScore = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('quizModal').classList.remove('hidden');
+            loadQuizQuestion();
+        }
+
+        function closeQuizModal() {
+            document.getElementById('quizModal').classList.add('hidden');
+        }
+
+        function loadQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quizProgress').textContent = `Pertanyaan ${currentQuizIndex + 1} dari ${quizQuestions.length}`;
+            document.getElementById('quizScore').textContent = `Skor: ${quizScore}`;
+            document.getElementById('quizQuestion').textContent = q.question;
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = q.options.map((opt, idx) => `
+                <button onclick="checkAnswer(${idx})" class="w-full text-left bg-slate-50 hover:bg-red-50 hover:border-red-300 border border-slate-200 p-3.5 rounded-2xl text-sm font-semibold text-slate-700 transition flex items-center justify-between group">
+                    <span>${opt}</span>
+                    <span class="w-7 h-7 rounded-xl bg-slate-200 group-hover:bg-red-600 group-hover:text-white flex items-center justify-center text-xs font-black transition">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                </button>
+            `).join('');
+        }
+
+        function checkAnswer(selectedIndex) {
+            const q = quizQuestions[currentQuizIndex];
+            if (selectedIndex === q.answer) {
+                quizScore += 20;
+            }
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('quizResult').classList.remove('hidden');
+            document.getElementById('quizFinalScore').textContent = `Skor akhir kamu: ${quizScore} dari 100 poin! Bagus sekali!`;
+        }
+
+        function restartQuiz() {
+            openQuizModal();
+        }
+
+        window.onload = function() {
+            renderHeroes(heroesData);
+        };
+    </script>
+</body>
+</html>
